@@ -6,6 +6,7 @@ import {
   navigate,
   Navigate,
   useNavigate,
+  redirect,
 } from "react-router-dom";
 import Header from "../components/Header.js";
 import Main from "../components/Main.js";
@@ -28,8 +29,9 @@ export function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [email, setEmail] = React.useState("");
+  const [isRegistrationSuccessful, setRegistrationSuccessful] = useState(false);
 
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -38,6 +40,38 @@ export function App() {
   const [isLuck, setIsLuck] = React.useState(false);
   const [isInfoToolTipPopupOpen, setInfoToolTipPopupOpen] =
     React.useState(false);
+
+  useEffect(() => {
+    console.log(isLoggedIn, "isloggedIn");
+  }, [isLoggedIn]);
+
+  // const requestTokenHandler = async () => {
+  //   try {
+  //     const email = "korv.korp@yandex.ru";
+  //     const password = "123456";
+
+  //     const response = await authenticationApi.login(email, password);
+  //     const token = response.token;
+
+  //     console.log("Токен получен:", token);
+  //     return token;
+  //   } catch (error) {
+  //     console.log("Ошибка при получении токена:", error);
+  //   }
+  // };
+
+  // const checkTokenHandler = async () => {
+  //   try {
+  //     const token = await requestTokenHandler(); // Вызываем обработчик для запроса токена
+  //     const data = await authenticationApi.checkToken(token);
+
+  //     console.log("Результат проверки токена:", data);
+  //   } catch (error) {
+  //     console.log("Ошибка при проверке токена:", error);
+  //   }
+  // };
+
+  // checkTokenHandler();
 
   useEffect(() => {
     setIsLoading(true); // Устанавливаем состояние загрузки в true перед отправкой запроса
@@ -54,31 +88,32 @@ export function App() {
   }, []);
 
   React.useEffect(() => {
-    const checkToken = async () => {
+    const checkTokens = async () => {
       const jwt = localStorage.getItem("jwt");
-
+      console.log(jwt, "монтирование");
       if (jwt) {
         try {
           const res = await authenticationApi.checkToken(jwt);
           setIsLoggedIn(true);
           setEmail(res.data.email);
-          Navigate("/", { replace: true });
+          redirect("/");
+          console.log("success");
         } catch (err) {
           if (err.status === 401) {
             console.log("401 — токен не передан");
           }
-          console.log("401 — токен некорректен");
+          console.log("401 — токен некорректен", jwt, err);
         }
       }
     };
 
-    checkToken();
-  }, [Navigate]);
+    checkTokens();
+  }, []);
 
   function handleSignOut() {
     localStorage.removeItem("jwt");
     setIsLoggedIn(false);
-    Navigate("/sign-in", { replace: true });
+    redirect("/sign-in", { replace: true });
   }
 
   async function loginSubmit(email, password) {
@@ -86,8 +121,9 @@ export function App() {
       const res = await authenticationApi.login(email, password);
       localStorage.setItem("jwt", res.token);
       setIsLoggedIn(true);
+      console.log(res.token);
       setEmail(email);
-      Navigate("/", { replace: true });
+      redirect("/", { replace: true });
     } catch (err) {
       if (err.status === 400) {
         console.log("400 - не передано одно из полей");
@@ -100,17 +136,32 @@ export function App() {
   async function registerSubmit(email, password) {
     try {
       await authenticationApi.register(email, password);
-      setInfoToolTipPopupOpen(true);
+
       setIsLuck(true);
-      Navigate("/sign-in", { replace: true });
+
+      setRegistrationSuccessful(true);
+      //console.log(isRegistrationSuccessful);
+      redirect("/sign-in", { replace: true });
+      setInfoToolTipPopupOpen(true);
     } catch (err) {
       if (err.status === 400) {
         console.log("400 - поле заполненно некорректно");
       }
       setInfoToolTipPopupOpen(true);
       setIsLuck(false);
+      setRegistrationSuccessful(false);
+      console.log(isRegistrationSuccessful);
     }
   }
+
+  // useEffect(() => {
+  //   if (isRegistrationSuccessful) {
+  //     console.log("xxxx");
+  //     redirect("/sign-in", { replace: true });
+  //   } else {
+  //     console.log("fuck this I am an idiot");
+  //   }
+  // }, [isRegistrationSuccessful]);
 
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
@@ -225,27 +276,16 @@ export function App() {
     setSelectedCard(card);
   };
 
-  useEffect(() => {
-    api
-      .getUserInfo()
-      .then((data) => {
-        setCurrentUser(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    api
-      .getInitialCardsData()
-      .then((data) => {
-        setCards(data);
-      })
-      .catch((error) => {
-        console.log("Ошибка при загрузке карточек:", error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   api
+  //     .getUserInfo()
+  //     .then((data) => {
+  //       setCurrentUser(data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser || ""}>
@@ -261,28 +301,31 @@ export function App() {
             <Route
               path="/"
               element={
-                isLoggedIn ? (
-                  <ProtectedRouteElement
-                    element={Main}
-                    isLoggedIn={isLoggedIn}
-                    onEditAvatar={handleEditAvatarClick}
-                    onEditProfile={handleEditProfileClick}
-                    onAddPlace={handleAddPlaceClick}
-                    cards={cards}
-                    onCardClick={handleCardClick}
-                    CurrentUserContext={currentUser}
-                    handleCardLike={handleCardLike}
-                    onCardDelete={handleCardDelete}
-                  />
-                ) : (
-                  <Navigate to="sign-in" />
-                )
+                <ProtectedRouteElement
+                  element={Main}
+                  isLoggedIn={isLoggedIn}
+                  onEditAvatar={handleEditAvatarClick}
+                  onEditProfile={handleEditProfileClick}
+                  onAddPlace={handleAddPlaceClick}
+                  cards={cards}
+                  onCardClick={handleCardClick}
+                  CurrentUserContext={currentUser}
+                  handleCardLike={handleCardLike}
+                  onCardDelete={handleCardDelete}
+                />
               }
             />
 
             <Route
               path="/sign-up"
-              element={<Register onRegistration={registerSubmit} replace />}
+              element={
+                <Register
+                  onRegistration={registerSubmit}
+                  isRegistrationSuccessful={isRegistrationSuccessful}
+                  redirect={redirect}
+                  replace
+                />
+              }
             />
             <Route
               path="/sign-in"

@@ -54,8 +54,9 @@ class Api {
     return localStorage.getItem("jwt");
   }
 
-  async checkToken() {
-    const token = this.getToken(); // Получаем токен из localStorage
+  async checkToken(token) {
+    //const token = this.getToken(); // Получаем токен из localStorage
+
     try {
       const response = await fetch(`${this._url}/users/me`, {
         method: "GET",

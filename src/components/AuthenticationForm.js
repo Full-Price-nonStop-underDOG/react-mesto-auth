@@ -50,7 +50,7 @@ function AuthenticationForm({ onSubmit, title, buttonText }) {
             {title === "Регистрация" ? "Уже зарегистрированы?" : ""}
           </p>
           <Link
-            to={title === "Регистрация" ? "/sign-in" : ""}
+            to={title === "Регистрация" ? "" : ""}
             className="authentication__sign-up_words"
           >
             {title === "Регистрация" ? "Войти" : ""}

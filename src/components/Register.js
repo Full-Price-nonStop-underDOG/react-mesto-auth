@@ -4,21 +4,31 @@ import { useNavigate } from "react-router-dom";
 
 function Register(props) {
   const navigate = useNavigate();
-  const [isRegistrationSuccessful, setRegistrationSuccessful] = useState(false);
+  function handleSubmit(email, password) {
+    props.onRegistration(email, password);
+  }
 
-  async function handleSubmit(email, password) {
-    try {
-      await props.onRegistration(email, password);
-      setRegistrationSuccessful(true);
-    } catch (error) {
-      setRegistrationSuccessful(false);
+  useEffect(() => {
+    if (props.isRegistrationSuccessful) {
+      console.log("xxxx");
+      navigate("/sign-in", { replace: true });
+    } else {
+      console.log("fuck this I am an idiot");
     }
-  }
+  }, [props.isRegistrationSuccessful]);
 
-  // Переход на страницу sign-in только при успешной регистрации
-  if (isRegistrationSuccessful) {
-    navigate("/sign-in");
-  }
+  // async function handleSubmit(email, password) {
+  //   try {
+  //     await props.onRegistration(email, password);
+
+  //     if (props.isRegistrationSuccessful) {
+  //       console.log(props.isRegistrationSuccessful, "ватафак");
+  //       navigate("/sign-in");
+  //     }
+  //   } catch (error) {
+  //     console.log(props.isRegistrationSuccessful);
+  //   }
+  // }
 
   return (
     <AuthenticationForm

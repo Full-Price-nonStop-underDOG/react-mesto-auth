@@ -9,7 +9,7 @@ function InfoToolTip(props) {
     >
       <div className="popup__container">
         <div className="popup__form">
-          {!props.isLuck ? (
+          {props.isLuck ? (
             <>
               <img
                 src={`${Union}`}
