@@ -3,7 +3,7 @@
     width: 100%;
     max-width: 3200px;
     min-width: 320px;
-    height: 100%;
+   
     color: #FFFFFF;
     padding: 37px 0 60px 0;
     margin: 0;
@@ -18,3 +18,12 @@
         padding-top: 22px;
     }
 }
+html, body {
+   
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    background-color: #000000;
+  }
