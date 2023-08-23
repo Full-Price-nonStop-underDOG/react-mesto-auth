@@ -24,6 +24,8 @@ import Login from "./Login.js";
 import authenticationApi from "../utils/AuthenticationApi.js";
 import InfoToolTip from "./InfoTooltip.js";
 
+// app.js — входной файл
+
 export function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
