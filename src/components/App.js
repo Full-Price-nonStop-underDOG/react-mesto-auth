@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -7,22 +7,22 @@ import {
   Navigate,
   useNavigate,
   redirect,
-} from "react-router-dom";
-import Header from "../components/Header.js";
-import Main from "../components/Main.js";
-import Footer from "../components/Footer.js";
-import PopupWithForm from "./PopupWithForm.js";
-import api from "../utils/Api.js";
-import ImagePopup from "./ImagePopup.js";
-import CurrentUserContext from "../contexts/CurrentUserContext.js";
-import EditProfilePopup from "./EditProfilePopup.js";
-import EditAvatarPopup from "./EditAvatarPopup.js";
-import AddPlacePopup from "./AddPlacePopup.js";
-import Register from "./Register.js";
-import ProtectedRouteElement from "./ProtectedRoute.js";
-import Login from "./Login.js";
-import authenticationApi from "../utils/AuthenticationApi.js";
-import InfoToolTip from "./InfoTooltip.js";
+} from 'react-router-dom';
+import Header from '../components/Header.js';
+import Main from '../components/Main.js';
+import Footer from '../components/Footer.js';
+import PopupWithForm from './PopupWithForm.js';
+import api from '../utils/Api.js';
+import ImagePopup from './ImagePopup.js';
+import CurrentUserContext from '../contexts/CurrentUserContext.js';
+import EditProfilePopup from './EditProfilePopup.js';
+import EditAvatarPopup from './EditAvatarPopup.js';
+import AddPlacePopup from './AddPlacePopup.js';
+import Register from './Register.js';
+import ProtectedRouteElement from './ProtectedRoute.js';
+import Login from './Login.js';
+import authenticationApi from '../utils/AuthenticationApi.js';
+import InfoToolTip from './InfoTooltip.js';
 
 // app.js — входной файл
 
@@ -32,7 +32,7 @@ export function App() {
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(null);
-  const [email, setEmail] = React.useState("");
+  const [email, setEmail] = React.useState('');
   const [isRegistrationSuccessful, setRegistrationSuccessful] = useState(false);
 
   const [cards, setCards] = useState([]);
@@ -44,7 +44,7 @@ export function App() {
     React.useState(false);
 
   useEffect(() => {
-    console.log(isLoggedIn, "isloggedIn");
+    console.log(isLoggedIn, 'isloggedIn');
   }, [isLoggedIn]);
 
   // const requestTokenHandler = async () => {
@@ -91,20 +91,20 @@ export function App() {
 
   React.useEffect(() => {
     const checkTokens = async () => {
-      const jwt = localStorage.getItem("jwt");
-      console.log(jwt, "монтирование");
+      const jwt = localStorage.getItem('jwt');
+      console.log(jwt, 'монтирование');
       if (jwt) {
         try {
           const res = await authenticationApi.checkToken(jwt);
           setIsLoggedIn(true);
           setEmail(res.data.email);
-          redirect("/");
-          console.log("success");
+          redirect('/');
+          console.log('success');
         } catch (err) {
           if (err.status === 401) {
-            console.log("401 — токен не передан");
+            console.log('401 — токен не передан');
           }
-          console.log("401 — токен некорректен", jwt, err);
+          console.log('401 — токен некорректен', jwt, err);
         }
       }
     };
@@ -113,24 +113,24 @@ export function App() {
   }, []);
 
   function handleSignOut() {
-    localStorage.removeItem("jwt");
+    localStorage.removeItem('jwt');
     setIsLoggedIn(false);
-    redirect("/sign-in", { replace: true });
+    redirect('/sign-in', { replace: true });
   }
 
   async function loginSubmit(email, password) {
     try {
       const res = await authenticationApi.login(email, password);
-      localStorage.setItem("jwt", res.token);
+      localStorage.setItem('jwt', res.token);
       setIsLoggedIn(true);
       console.log(res.token);
       setEmail(email);
-      redirect("/", { replace: true });
+      redirect('/', { replace: true });
     } catch (err) {
       if (err.status === 400) {
-        console.log("400 - не передано одно из полей");
+        console.log('400 - не передано одно из полей');
       } else if (err.status === 401) {
-        console.log("401 - пользователя с данным email не сущетсвует");
+        console.log('401 - пользователя с данным email не сущетсвует');
       }
     }
   }
@@ -143,11 +143,11 @@ export function App() {
 
       setRegistrationSuccessful(true);
       //console.log(isRegistrationSuccessful);
-      redirect("/sign-in", { replace: true });
+      redirect('/sign-in', { replace: true });
       setInfoToolTipPopupOpen(true);
     } catch (err) {
       if (err.status === 400) {
-        console.log("400 - поле заполненно некорректно");
+        console.log('400 - поле заполненно некорректно');
       }
       setInfoToolTipPopupOpen(true);
       setIsLuck(false);
@@ -180,7 +180,7 @@ export function App() {
         })
         .catch((error) => {
           // Обработка ошибки при удалении лайка
-          console.error("Error removing like:", error);
+          console.error('Error removing like:', error);
         });
     } else {
       api
@@ -192,7 +192,7 @@ export function App() {
         })
         .catch((error) => {
           // Обработка ошибки при добавлении лайка
-          console.error("Error adding like:", error);
+          console.error('Error adding like:', error);
         });
     }
   }
@@ -204,7 +204,7 @@ export function App() {
         setCards((state) => state.filter((c) => c._id !== card._id));
       })
       .catch((error) => {
-        console.log("Ошибка при удалении карточки:", error);
+        console.log('Ошибка при удалении карточки:', error);
       });
   }
 
@@ -248,8 +248,8 @@ export function App() {
         setIsLoading(false); // Set loading state to false after receiving the response
       })
       .catch((error) => {
-        console.log("Error adding card:", error);
-        setError("Имя карточки слишком длинное."); // Set the error message
+        console.log('Error adding card:', error);
+        setError('Имя карточки слишком длинное.'); // Set the error message
         setIsLoading(false); // Set loading state to false in case of an error
       });
   }
@@ -290,8 +290,8 @@ export function App() {
   // }, []);
 
   return (
-    <CurrentUserContext.Provider value={currentUser || ""}>
-      <div className="page">
+    <CurrentUserContext.Provider value={currentUser || ''}>
+      <div className='page'>
         <BrowserRouter>
           <Header
             email={email}
@@ -301,7 +301,7 @@ export function App() {
 
           <Routes>
             <Route
-              path="/"
+              path='/'
               element={
                 <ProtectedRouteElement
                   element={Main}
@@ -319,7 +319,7 @@ export function App() {
             />
 
             <Route
-              path="/sign-up"
+              path='/sign-up'
               element={
                 <Register
                   onRegistration={registerSubmit}
@@ -330,7 +330,7 @@ export function App() {
               }
             />
             <Route
-              path="/sign-in"
+              path='/sign-in'
               element={<Login onLogin={loginSubmit} replace />}
             />
           </Routes>
@@ -350,12 +350,12 @@ export function App() {
           isLoading={isLoading}
         ></AddPlacePopup>
 
-        <div className="popup popup_type_confirmation">
-          <div className="popup__container">
-            <button type="button" className="popup__close"></button>
-            <form className="popup__form">
-              <h2 className="popup__title">Вы уверены?</h2>
-              <button type="submit" className="popup__submit">
+        <div className='popup popup_type_confirmation'>
+          <div className='popup__container'>
+            <button type='button' className='popup__close'></button>
+            <form className='popup__form'>
+              <h2 className='popup__title'>Вы уверены?</h2>
+              <button type='submit' className='popup__submit'>
                 Да
               </button>
             </form>
