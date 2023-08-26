@@ -1,4 +1,4 @@
-import { authenticationElemenetsApi } from "./constants";
+import { authenticationElemenetsApi } from './constants';
 
 class Api {
   constructor({ headers, URL }) {
@@ -9,13 +9,13 @@ class Api {
   _handlePromiseRequest(res) {
     if (res.ok) {
       return res.json();
-    } else throw new Error("ошибка");
+    } else throw new Error('ошибка');
   }
 
   async register(email, password) {
     try {
-      const response = await fetch(`${this._url}/signup`, {
-        method: "POST",
+      const response = await fetch(`${this._url}/sign-up`, {
+        method: 'POST',
         headers: this._headers,
 
         body: JSON.stringify({
@@ -33,7 +33,7 @@ class Api {
   async login(email, password) {
     try {
       const response = await fetch(`${this._url}/signin`, {
-        method: "POST",
+        method: 'POST',
         headers: this._headers,
         body: JSON.stringify({
           email: email,
@@ -42,7 +42,7 @@ class Api {
       });
       const data = await this._handlePromiseRequest(response);
       if (data.token) {
-        localStorage.setItem("jwt", data.token);
+        localStorage.setItem('jwt', data.token);
         return data;
       }
     } catch (error) {
@@ -51,7 +51,7 @@ class Api {
   }
 
   getToken() {
-    return localStorage.getItem("jwt");
+    return localStorage.getItem('jwt');
   }
 
   async checkToken(token) {
@@ -59,7 +59,7 @@ class Api {
 
     try {
       const response = await fetch(`${this._url}/users/me`, {
-        method: "GET",
+        method: 'GET',
         headers: {
           ...this._headers,
           Authorization: `Bearer ${token}`, // Передаем токен в заголовке запроса
