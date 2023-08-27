@@ -37,7 +37,7 @@ export const authenticationElemenetsApi = {
   headers: {
     'Content-Type': 'application/json',
   },
-  URL: 'https://api.korvin.boy.nomoredomainsicu.ru',
+  URL: 'http://localhost:3001',
 };
 
 export const config = {
