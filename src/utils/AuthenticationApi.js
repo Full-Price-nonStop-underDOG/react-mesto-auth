@@ -14,7 +14,7 @@ class Api {
 
   async register(email, password) {
     try {
-      const response = await fetch(`${this._url}/sign-up`, {
+      const response = await fetch(`${this._url}/signup`, {
         method: 'POST',
         headers: this._headers,
 
