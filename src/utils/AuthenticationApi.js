@@ -32,6 +32,7 @@ class Api {
 
   async login(email, password) {
     try {
+      console.log('1');
       const response = await fetch(`${this._url}/signin`, {
         method: 'POST',
         headers: this._headers,
@@ -40,12 +41,16 @@ class Api {
           password: password,
         }),
       });
+      console.log('2');
       const data = await this._handlePromiseRequest(response);
-      if (data.token) {
+      console.log(data, data.token);
+      if (data) {
         localStorage.setItem('jwt', data.token);
+        console.log('3');
         return data;
       }
     } catch (error) {
+      console.log('4');
       throw new Error(error);
     }
   }
@@ -56,7 +61,7 @@ class Api {
 
   async checkToken(token) {
     //const token = this.getToken(); // Получаем токен из localStorage
-
+    console.log(token);
     try {
       const response = await fetch(`${this._url}/users/me`, {
         method: 'GET',
