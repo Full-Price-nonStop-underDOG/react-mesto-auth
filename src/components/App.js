@@ -145,7 +145,6 @@ export function App() {
     const jwt = localStorage.getItem('jwt');
 
     const isLiked = card.likes.some((i) => i === currentUser._id);
-    console.log(isLiked);
 
     console.log(card);
     if (isLiked) {
