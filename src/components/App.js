@@ -86,7 +86,7 @@ export function App() {
     checkTokensAndFetchData();
 
     if (isLoggedIn === false) {
-      navigate('/sign-in', { replace: true });
+      redirect('/sign-in', { replace: true });
     }
   }, [isLoggedIn]); // Эффект будет срабатывать при изменении isLoggedIn
 
