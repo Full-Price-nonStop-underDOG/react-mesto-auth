@@ -51,7 +51,7 @@ export function App() {
     console.log(isLoggedIn, 'isloggedIn');
   }, [isLoggedIn]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const checkTokensAndFetchData = async () => {
       const jwt = localStorage.getItem('jwt');
 
@@ -60,7 +60,6 @@ export function App() {
           const res = await authenticationApi.checkToken(jwt);
           setIsLoggedIn(true);
           setEmail(res.email);
-          redirect('/');
           console.log('Token check success');
         } catch (err) {
           if (err.status === 401) {
@@ -70,22 +69,26 @@ export function App() {
         }
       }
 
-      setIsLoading(true); // Устанавливаем состояние загрузки в true перед отправкой запроса
+      setIsLoading(true);
+
       Promise.all([api.getUserInfo(jwt), api.getInitialCardsData(jwt)])
         .then(([userData, cardsData]) => {
           setCurrentUser(userData);
-
           setCards(cardsData);
-          setIsLoading(false); // Устанавливаем состояние загрузки в false после получения данных
+          setIsLoading(false);
         })
         .catch((error) => {
           console.log(error);
-          setIsLoading(false); // Устанавливаем состояние загрузки в false в случае ошибки
+          setIsLoading(false);
         });
     };
 
     checkTokensAndFetchData();
-  }, []);
+
+    if (isLoggedIn === false) {
+      navigate('/sign-in', { replace: true });
+    }
+  }, [isLoggedIn]); // Эффект будет срабатывать при изменении isLoggedIn
 
   function handleSignOut() {
     localStorage.removeItem('jwt');
