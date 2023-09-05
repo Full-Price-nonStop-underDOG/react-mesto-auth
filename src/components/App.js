@@ -58,7 +58,7 @@ export function App() {
       if (jwt) {
         try {
           const res = await authenticationApi.checkToken(jwt);
-          setIsLoggedIn(true);
+
           setEmail(res.email);
           console.log('Token check success');
         } catch (err) {
