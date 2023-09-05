@@ -10,7 +10,7 @@ const ProtectedRouteElement = ({
 }) => {
   if (isLoggedIn === true) {
     return <Component {...props} />;
-  } else {
+  } (isLoggedIn === false || isLoggedIn === null || isLoggedIn === undefined) {
     return <Navigate to='/sign-in' replace />;
   }
 };
