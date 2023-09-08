@@ -61,6 +61,9 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      return; // Если пользователь не авторизован, ничего не делаем
+    }
     const checkTokensAndFetchData = async () => {
       const jwt = localStorage.getItem('jwt');
 
